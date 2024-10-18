@@ -9,14 +9,15 @@ function Search({ onSearch }) {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="search-form">
       <input
         type="text"
         value={input}
         onChange={(e) => setInput(e.target.value)}
         placeholder="Enter GitHub username"
+        className="search-input"
       />
-      <button type="submit">Search</button>
+      <button type="submit" className="search-button">Search</button>
     </form>
   );
 }
