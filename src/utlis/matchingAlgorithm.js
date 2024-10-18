@@ -1,17 +1,16 @@
-// src/utils/matchingAlgorithm.js
 import { Octokit } from "@octokit/rest";
 
 const octokit = new Octokit({ auth: import.meta.env.VITE_GITHUB_TOKEN });
 
 const calculateLanguageCompatibility = (userLanguages, buddyLanguages) => {
   const commonLanguages = Object.keys(userLanguages).filter(lang => buddyLanguages[lang]);
-  const totalUserLines = Object.values(userLanguages).reduce((a, b) => a + b, 0);
-  const totalBuddyLines = Object.values(buddyLanguages).reduce((a, b) => a + b, 0);
+  const totalUserRepos = Object.values(userLanguages).reduce((a, b) => a + b, 0);
+  const totalBuddyRepos = Object.values(buddyLanguages).reduce((a, b) => a + b, 0);
   
   let compatibility = 0;
   commonLanguages.forEach(lang => {
-    const userPercentage = userLanguages[lang] / totalUserLines;
-    const buddyPercentage = buddyLanguages[lang] / totalBuddyLines;
+    const userPercentage = userLanguages[lang] / totalUserRepos;
+    const buddyPercentage = buddyLanguages[lang] / totalBuddyRepos;
     compatibility += Math.min(userPercentage, buddyPercentage);
   });
 
@@ -24,10 +23,9 @@ const getLanguageStats = async (username) => {
 
   for (const repo of repos) {
     if (repo.fork) continue;
-    const { data: languages } = await octokit.repos.listLanguages({ owner: username, repo: repo.name });
-    Object.entries(languages).forEach(([lang, bytes]) => {
-      languageStats[lang] = (languageStats[lang] || 0) + bytes;
-    });
+    if (repo.language) {
+      languageStats[repo.language] = (languageStats[repo.language] || 0) + 1;
+    }
   }
 
   return languageStats;
@@ -54,7 +52,7 @@ export const findBuddies = async (user) => {
   const potentialBuddies = [...followers, ...following];
   const buddyScores = [];
 
-  for (const buddy of potentialBuddies) {
+  for (const buddy of potentialBuddies.slice(0, 10)) {  // Limit to first 10 for performance
     const buddyLanguages = await getLanguageStats(buddy.login);
     const buddyEvents = await getRecentActivity(buddy.login);
 
@@ -71,5 +69,5 @@ export const findBuddies = async (user) => {
     });
   }
 
-  return buddyScores.sort((a, b) => b.matchScore - a.matchScore).slice(0, 10);
+  return buddyScores.sort((a, b) => b.matchScore - a.matchScore);
 };
