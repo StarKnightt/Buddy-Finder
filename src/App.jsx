@@ -73,7 +73,7 @@ function App() {
             {activities && <ActivityChart activities={activities} />}
           </div>
           {buddiesLoading ? (
-            <p>Finding your true buddies... This may take a few moments.</p>
+            <p>Finding your true buddies... This may take a few moments💘</p>
           ) : buddies && buddies.length > 0 ? (
             <BuddyList buddies={buddies} />
           ) : (
