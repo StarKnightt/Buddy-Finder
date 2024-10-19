@@ -1,26 +1,40 @@
-/* src/index.css */
 :root {
-  --primary-color: #FF6B6B;
-  --secondary-color: #4ECDC4;
-  --background-color: #F7FFF7;
-  --text-color: #2C3E50;
+  --primary-color: #4A90E2;
+  --secondary-color: #50E3C2;
+  --background-color: #F5F7FA;
+  --text-color: #333333;
   --border-color: #E0E0E0;
+  --card-background: #FFFFFF;
+  --hover-color: #3A7BD5;
 }
 
+.dark-mode {
+  --primary-color: #6AB0FF;
+  --secondary-color: #70F3D2;
+  --background-color: #1A1A1A;
+  --text-color: #F0F0F0;
+  --border-color: #444444;
+  --card-background: #2A2A2A;
+  --hover-color: #5A9AE5;
+}
+
+
 body {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Inter', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: var(--background-color);
   color: var(--text-color);
   margin: 0;
   padding: 0;
+  line-height: 1.6;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .App {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 2rem 1rem;
   position: relative;
 }
 
@@ -32,23 +46,54 @@ body {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  z-index: 10;
 }
 
 .social-links a {
   color: var(--primary-color);
   font-size: 24px;
-  transition: color 0.3s ease;
+  transition: color 0.3s ease, transform 0.3s ease;
 }
 
 .social-links a:hover {
-  color: var(--secondary-color);
+  color: var(--hover-color);
+  transform: scale(1.1);
 }
+
+/* Header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+  margin-bottom: 2rem;
+}
+
+.header h1 {
+  margin: 0;
+  cursor: pointer;
+}
+
+.mode-toggle {
+  background: none;
+  border: none;
+  color: var(--text-color);
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.mode-toggle:hover {
+  color: var(--primary-color);
+}
+
 
 h1 {
   color: var(--primary-color);
   text-align: center;
   font-size: 3rem;
   margin-bottom: 1rem;
+  font-weight: 700;
 }
 
 .tagline {
@@ -56,6 +101,7 @@ h1 {
   font-size: 1.5rem;
   color: var(--secondary-color);
   margin-bottom: 3rem;
+  font-weight: 500;
 }
 
 /* Search Component */
@@ -70,13 +116,16 @@ h1 {
   font-size: 1.1rem;
   border: 2px solid var(--border-color);
   border-radius: 50px 0 0 50px;
-  width: 400px;
-  transition: border-color 0.3s ease;
+  width: 100%;
+  max-width: 400px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .search-input:focus {
   outline: none;
   border-color: var(--primary-color);
+  box-shadow: 0 4px 15px rgba(74, 144, 226, 0.2);
 }
 
 .search-button {
@@ -87,21 +136,28 @@ h1 {
   border: none;
   border-radius: 0 50px 50px 0;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .search-button:hover {
-  background-color: var(--secondary-color);
+  background-color: var(--hover-color);
+  box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
 }
 
 /* Profile Display Component */
 .profile {
-  background-color: white;
+  background-color: var(--card-background);
   border-radius: 15px;
   padding: 2rem;
   margin-bottom: 2rem;
   text-align: center;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.profile:hover {
+  transform: translateY(-5px);
 }
 
 .profile img {
@@ -110,29 +166,31 @@ h1 {
   border-radius: 50%;
   margin-bottom: 1rem;
   border: 5px solid var(--primary-color);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
 /* Metrics Overview Component */
 .metrics {
-  background-color: white;
+  background-color: var(--card-background);
   border-radius: 15px;
   padding: 2rem;
   margin-bottom: 2rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }
 
 /* Buddy List Component */
 .buddy-list {
-  background-color: white;
+  background-color: var(--card-background);
   border-radius: 15px;
   padding: 2rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }
 
 .buddy-list h2 {
   color: var(--primary-color);
   text-align: center;
   margin-bottom: 1.5rem;
+  font-weight: 700;
 }
 
 .buddy-list ul {
@@ -145,7 +203,7 @@ h1 {
   align-items: center;
   padding: 1rem;
   border-bottom: 1px solid var(--border-color);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 .buddy-list li:last-child {
@@ -155,6 +213,7 @@ h1 {
 .buddy-list li:hover {
   transform: translateY(-5px);
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  background-color: rgba(74, 144, 226, 0.05);
 }
 
 .buddy-list img {
@@ -163,6 +222,11 @@ h1 {
   border-radius: 50%;
   margin-right: 1rem;
   border: 3px solid var(--secondary-color);
+  transition: transform 0.3s ease;
+}
+
+.buddy-list li:hover img {
+  transform: scale(1.1);
 }
 
 .buddy-list .buddy-info {
@@ -174,11 +238,13 @@ h1 {
 .buddy-list .buddy-name {
   font-weight: bold;
   color: var(--primary-color);
+  font-size: 1.1rem;
 }
 
 .buddy-list .match-score {
   font-size: 0.9rem;
   color: var(--secondary-color);
+  font-weight: 500;
 }
 
 .buddy-list .buddy-actions {
@@ -191,7 +257,8 @@ h1 {
   border: none;
   border-radius: 20px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: all 0.3s ease;
+  font-weight: 500;
 }
 
 .buddy-list .connect-btn {
@@ -206,4 +273,162 @@ h1 {
 
 .buddy-list .buddy-action-btn:hover {
   opacity: 0.9;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Landing Page */
+.landing-page {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.feature-list {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 2rem;
+  margin-top: 3rem;
+}
+
+.feature-item {
+  flex: 1;
+  min-width: 250px;
+  max-width: 300px;
+  background-color: var(--card-background);
+  border-radius: 15px;
+  padding: 1.5rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.feature-item:hover {
+  transform: translateY(-5px);
+}
+
+.feature-icon {
+  font-size: 2rem;
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+}
+
+.feature-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .App {
+    padding: 1rem;
+  }
+
+  h1 {
+    font-size: 2.5rem;
+  }
+
+  .tagline {
+    font-size: 1.2rem;
+  }
+
+  .search-form {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .search-input,
+  .search-button {
+    width: 100%;
+    max-width: none;
+    border-radius: 50px;
+  }
+
+  .search-button {
+    margin-top: 1rem;
+  }
+
+  .social-links {
+    position: static;
+    flex-direction: row;
+    justify-content: center;
+    margin-bottom: 2rem;
+    transform: none;
+  }
+
+  .profile img {
+    width: 150px;
+    height: 150px;
+  }
+
+  .buddy-list li {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .buddy-list img {
+    margin-right: 0;
+    margin-bottom: 1rem;
+  }
+
+  .buddy-list .buddy-actions {
+    margin-top: 1rem;
+  }
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.profile,
+.metrics,
+.buddy-list,
+.search-form {
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* Charts */
+.charts-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.language-chart,
+.activity-chart {
+  flex: 1;
+  min-width: 300px;
+  background-color: var(--card-background);
+  border-radius: 15px;
+  padding: 1.5rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.language-chart h3,
+.activity-chart h3 {
+  color: var(--primary-color);
+  text-align: center;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .feature-list {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .feature-item {
+    width: 100%;
+    max-width: none;
+  }
 }
