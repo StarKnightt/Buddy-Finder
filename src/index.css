@@ -283,6 +283,11 @@ h1 {
   margin-bottom: 4rem;
 }
 
+.search-section {
+  max-width: 600px;
+  margin: 3rem auto;
+}
+
 .feature-list {
   display: flex;
   justify-content: space-around;
@@ -430,5 +435,9 @@ h1 {
   .feature-item {
     width: 100%;
     max-width: none;
+  }
+
+  .search-section {
+    padding: 0 1rem;
   }
 }
