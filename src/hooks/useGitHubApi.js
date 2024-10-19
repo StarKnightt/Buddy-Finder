@@ -26,31 +26,10 @@ const useGitHubApi = (username) => {
         setUserData(data);
         setLoading(false);
 
-        // Fetch languages data
-        const languagesResponse = await fetch(`https://api.github.com/users/${username}/repos`);
-        const reposData = await languagesResponse.json();
-        const languagesData = reposData.reduce((acc, repo) => {
-          if (repo.language) {
-            acc[repo.language] = (acc[repo.language] || 0) + 1;
-          }
-          return acc;
-        }, {});
-        setLanguages(languagesData);
-
-        // Fetch activities data
-        const activitiesResponse = await fetch(`https://api.github.com/users/${username}/events/public`);
-        const activitiesData = await activitiesResponse.json();
-        const activityCounts = activitiesData.reduce((acc, event) => {
-          acc[event.type] = (acc[event.type] || 0) + 1;
-          return acc;
-        }, {});
-        setActivities(activityCounts);
-
-        // Find buddies (this will take longer)
+        // Fetch buddies
         const potentialBuddies = await findBuddies(data);
         setBuddies(potentialBuddies);
         setBuddiesLoading(false);
-
       } catch (err) {
         console.error('Error in useGitHubApi:', err);
         setError(err.message);
