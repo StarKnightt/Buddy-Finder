@@ -36,32 +36,34 @@ function App() {
       </header>
       <p className="tagline">Find your true coding Friends 💗</p>
       
-      <div className="landing-page">
-        <h2>Welcome to GitHub Buddy Finder</h2>
-        <p>Discover like-minded developers and expand your coding network</p>
-        
-        <div className="search-section">
-          <Search onSearch={setSearchTerm} />
-        </div>
+      {!searchTerm && (
+        <div className="landing-page">
+          <h2>Welcome to GitHub Buddy Finder</h2>
+          <p>Discover like-minded developers and expand your coding network</p>
+          
+          <div className="search-section">
+            <Search onSearch={setSearchTerm} />
+          </div>
 
-        <div className="feature-list">
-          <div className="feature-item">
-            <FaSearch className="feature-icon" />
-            <h3 className="feature-title">Easy Search</h3>
-            <p>Find potential coding buddies with just a GitHub username</p>
-          </div>
-          <div className="feature-item">
-            <FaUsers className="feature-icon" />
-            <h3 className="feature-title">Match Algorithm</h3>
-            <p>Our smart algorithm suggests buddies based on coding habits and interests</p>
-          </div>
-          <div className="feature-item">
-            <FaCode className="feature-icon" />
-            <h3 className="feature-title">Skill Insights</h3>
-            <p>Visualize language preferences and coding activity patterns</p>
+          <div className="feature-list">
+            <div className="feature-item">
+              <FaSearch className="feature-icon" />
+              <h3 className="feature-title">Easy Search</h3>
+              <p>Find potential coding buddies with just a GitHub username</p>
+            </div>
+            <div className="feature-item">
+              <FaUsers className="feature-icon" />
+              <h3 className="feature-title">Match Algorithm</h3>
+              <p>Our smart algorithm suggests buddies based on coding habits and interests</p>
+            </div>
+            <div className="feature-item">
+              <FaCode className="feature-icon" />
+              <h3 className="feature-title">Skill Insights</h3>
+              <p>Visualize language preferences and coding activity patterns</p>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {loading && <p>Loading user data... Please wait.</p>}
       {error && <p>Error: {error}</p>}
@@ -72,13 +74,7 @@ function App() {
             {languages && <LanguageChart languages={languages} />}
             {activities && <ActivityChart activities={activities} />}
           </div>
-          {buddiesLoading ? (
-            <p>Finding your true buddies... This may take a few moments💘</p>
-          ) : buddies && buddies.length > 0 ? (
-            <BuddyList buddies={buddies} />
-          ) : (
-            <p>No buddies found. Try searching for a different user.</p>
-          )}
+          <BuddyList buddies={buddies} loading={buddiesLoading} />
         </>
       )}
     </div>
