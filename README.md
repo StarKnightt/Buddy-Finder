@@ -79,9 +79,8 @@ This project is [MIT](https://choosealicense.com/licenses/mit/) licensed.
 ## 👤 Author
 
 **Your Name**
-- GitHub: [@your-github-username](https://github.com/your-github-username)
-- Twitter: [@your-twitter-handle](https://twitter.com/your-twitter-handle)
-- LinkedIn: [Your LinkedIn](https://linkedin.com/in/your-linkedin-profile)
+- GitHub: [@StarKnightt](https://github.com/StarKnightt)
+- Twitter: [@Star_Knight12](https://x.com/Star_Knight12)
 
 ## 🙏 Acknowledgements
 
