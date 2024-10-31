@@ -27,7 +27,41 @@ const EVENT_WEIGHTS = {
   // ... add other event types as needed
 };
 const GENDER_PREFERENCE_WEIGHT = 0.2; // How much gender preference affects overall score
+const LANGUAGE_WEIGHT = 0.2; // Reduced to 20%
+const ACTIVITY_WEIGHT = 0.2; // Reduced to 20%
 const DEFAULT_GENDER_RATIO = 0.7; // Percentage of opposite gender recommendations
+
+// Update constants with latest demographics and weights
+const DEMOGRAPHICS = {
+  MALE_RATIO: 0.667,   // 66.7% male
+  FEMALE_RATIO: 0.333  // 33.3% female
+};
+
+const WEIGHTS = {
+  GENDER: 0.8,      // 80% weight for gender
+  LANGUAGE: 0.1,    // 10% weight for language
+  ACTIVITY: 0.1     // 10% weight for activity
+};
+
+// Adjust match ratios based on user's gender
+const getTargetGenderRatio = (userGender) => {
+  if (userGender === 'F') {
+    return {
+      oppositeGenderRatio: 0.90, // Show 90% men
+      sameGenderRatio: 0.10      // Show 10% women
+    };
+  } else if (userGender === 'M') {
+    return {
+      oppositeGenderRatio: 0.45, // Show 45% women (higher than demographic to promote diversity)
+      sameGenderRatio: 0.55      // Show 55% men
+    };
+  }
+  // For unknown gender, use demographic ratios
+  return {
+    oppositeGenderRatio: DEMOGRAPHICS.MALE_RATIO,
+    sameGenderRatio: DEMOGRAPHICS.FEMALE_RATIO
+  };
+};
 
 // Enhanced rate limit handling with exponential backoff
 const checkRateLimit = async (octokitInstance, retryCount = 0) => {
@@ -193,22 +227,22 @@ export const findBuddies = async (user, preferredGender = null) => {
     const languageCompatibility = calculateLanguageCompatibility(userLanguages, buddyLanguages);
     const activityCompatibility = calculateActivityCompatibility(userEvents, buddyEvents);
 
-    // Calculate gender preference score
+    // Enhanced gender scoring with much higher weight
     let genderScore = 1.0;
     if (userGender !== 'U' && buddyGender !== 'U') {
-      if (preferredGender) {
-        // If user has explicit preference
-        genderScore = buddyGender === preferredGender ? 1.2 : 0.8;
-      } else {
-        // Default behavior: slightly favor opposite gender
-        genderScore = userGender !== buddyGender ? 1.2 : 0.8;
+      if (userGender === 'F') {
+        // Women see higher scores for men matches
+        genderScore = buddyGender === 'M' ? 2.0 : 0.5;
+      } else if (userGender === 'M') {
+        // Men see higher scores for women matches, but adjusted for pool size
+        genderScore = buddyGender === 'F' ? 2.5 : 0.4; // Higher multiplier due to smaller pool
       }
     }
 
     const overallScore = (
-      languageCompatibility * 0.5 + 
-      activityCompatibility * 0.3 + 
-      genderScore * GENDER_PREFERENCE_WEIGHT
+      languageCompatibility * WEIGHTS.LANGUAGE +     // 10% weight
+      activityCompatibility * WEIGHTS.ACTIVITY +     // 10% weight
+      genderScore * WEIGHTS.GENDER                   // 80% weight
     );
 
     buddyScores.push({
@@ -220,7 +254,7 @@ export const findBuddies = async (user, preferredGender = null) => {
     });
   }));
 
-  // Sort by score and apply gender ratio
+  // Sort by score and apply demographic-aware gender ratio
   const sortedScores = buddyScores.sort((a, b) => b.matchScore - a.matchScore);
   
   // Split results by gender
@@ -231,9 +265,11 @@ export const findBuddies = async (user, preferredGender = null) => {
     b.gender === userGender || b.gender === 'U'
   );
 
-  // Combine results with desired ratio
-  const numOpposite = Math.ceil(sortedScores.length * DEFAULT_GENDER_RATIO);
-  const numSame = sortedScores.length - numOpposite;
+  // Calculate number of results for each gender based on ratios
+  const totalResults = Math.min(sortedScores.length, 20); // Limit to top 20 results
+  const { oppositeGenderRatio, sameGenderRatio } = getTargetGenderRatio(userGender);
+  const numOpposite = Math.round(totalResults * oppositeGenderRatio);
+  const numSame = totalResults - numOpposite;
 
   return [
     ...oppositeGender.slice(0, numOpposite),
