@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Search from './components/Search';
 import ProfileDisplay from './components/ProfileDisplay';
 import LanguageChart from './components/LanguageChart';
@@ -6,11 +6,19 @@ import ActivityChart from './components/ActivityChart';
 import BuddyList from './components/BuddyList';
 import useGitHubApi from './hooks/useGitHubApi';
 import { FaGithub, FaTwitter, FaCoffee, FaMoon, FaSun, FaSearch, FaUsers, FaCode } from 'react-icons/fa';
+import LoadingSpinner from './components/LoadingSpinner';
 
 function App() {
   const [searchTerm, setSearchTerm] = useState('');
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(() => {
+    return localStorage.getItem('darkMode') === 'true';
+  });
   const { userData, buddies, languages, activities, loading, buddiesLoading, error } = useGitHubApi(searchTerm);
+
+  useEffect(() => {
+    document.body.classList.toggle('dark-mode', darkMode);
+    localStorage.setItem('darkMode', darkMode);
+  }, [darkMode]);
 
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
@@ -22,7 +30,7 @@ function App() {
   };
 
   return (
-    <div className="App">
+    <div className="App" role="main">
       <div className="social-links">
         <a href="https://github.com/StarKnightt/Buddy-Finder" target="_blank" rel="noopener noreferrer"><FaGithub /></a>
         <a href="https://twitter.com/Star_Knight12" target="_blank" rel="noopener noreferrer"><FaTwitter /></a>
@@ -37,7 +45,7 @@ function App() {
       <p className="tagline">Find your true coding Friends 💗</p>
       
       {!searchTerm && (
-        <div className="landing-page">
+        <div className="landing-page" role="region" aria-label="Welcome Section">
           <h2>Welcome to GitHub Buddy Finder</h2>
           <p>Discover like-minded developers and expand your coding network</p>
           
@@ -65,17 +73,36 @@ function App() {
         </div>
       )}
 
-      {loading && <p>Loading user data... Please wait.</p>}
-      {error && <p>Error: {error}</p>}
+      {loading && (
+        <div className="loading-container" role="alert" aria-busy="true">
+          <LoadingSpinner />
+          <p>Loading user data... Please wait.</p>
+        </div>
+      )}
+      
+      {error && (
+        <div className="error-container" role="alert">
+          <p>Oops! Something went wrong.</p>
+          <p className="error-message">{error}</p>
+          <button onClick={() => setSearchTerm('')} className="retry-button">
+            Try Again
+          </button>
+        </div>
+      )}
+
       {userData && (
-        <>
+        <div className="results-container" role="region" aria-label="User Results">
           <ProfileDisplay user={userData} />
           <div className="charts-container">
             {languages && <LanguageChart languages={languages} />}
             {activities && <ActivityChart activities={activities} />}
           </div>
-          <BuddyList buddies={buddies} loading={buddiesLoading} />
-        </>
+          <BuddyList 
+            buddies={buddies} 
+            loading={buddiesLoading}
+            searchTerm={searchTerm} 
+          />
+        </div>
       )}
     </div>
   );
